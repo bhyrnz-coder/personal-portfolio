@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 
 export default function VideoLightbox({ video, onClose }) {
   useEffect(() => {
+    if (!video) return undefined;
+
     function handleKey(e) {
       if (e.key === 'Escape') onClose();
     }
@@ -13,7 +15,7 @@ export default function VideoLightbox({ video, onClose }) {
       document.removeEventListener('keydown', handleKey);
       document.body.style.overflow = '';
     };
-  }, [onClose]);
+  }, [video, onClose]);
 
   if (!video) return null;
 
