@@ -4,52 +4,51 @@ import { useCallback, useMemo, useState } from 'react';
 import VideoLightbox from './VideoLightbox';
 import GraphicLightbox from './GraphicLightbox';
 
-// Replace embedUrl with your real YouTube/Vimeo embed links,
-// e.g. 'https://www.youtube.com/embed/VIDEO_ID'
-const VIDEOS = [
-  {
-    id: 'v1',
-    title: 'Brand Story — Origin',
-    span: 'md:col-span-2 md:row-span-2',
-    embedUrl: '',
-  },
-  {
-    id: 'v2',
-    title: 'Client Testimonial',
-    span: 'md:col-span-1 md:row-span-2',
-    embedUrl: '',
-  },
-  {
-    id: 'v3',
-    title: 'Portrait Painting Reel',
-    span: 'md:col-span-1 md:row-span-2',
-    embedUrl: '',
-  },
-  {
-    id: 'v4',
-    title: 'Quick Tip: Just Practice',
-    span: 'md:col-span-1 md:row-span-1',
-    embedUrl: '',
-  },
-  {
-    id: 'v5',
-    title: 'Precision Color Grading',
-    span: 'md:col-span-1 md:row-span-1',
-    embedUrl: '',
-  },
-  {
-    id: 'v6',
-    title: 'Editing Takes Time',
-    span: 'md:col-span-1 md:row-span-1',
-    embedUrl: '',
-  },
-  {
-    id: 'v7',
-    title: 'Behind the Scenes',
-    span: 'md:col-span-1 md:row-span-1',
-    embedUrl: '',
-  },
-];
+// YouTube titles are intentionally not stored or rendered on the website.
+// To add more videos later, add another object with the YouTube video ID.
+const MAIN_VIDEOS = [
+  { id: 'main-01', youtubeId: 'EfovJzkfDIY', orientation: 'landscape' },
+  { id: 'main-02', youtubeId: 'gwlA5LbOzN4', orientation: 'landscape' },
+  { id: 'main-03', youtubeId: 'zrMbT-hrHhA', orientation: 'portrait' },
+  { id: 'main-04', youtubeId: 'GNDoB-9GxQM', orientation: 'portrait' },
+  { id: 'main-05', youtubeId: '0i-ojpwc81I', orientation: 'portrait' },
+  { id: 'main-06', youtubeId: 'T0-T-fR7Hig', orientation: 'portrait' },
+  { id: 'main-07', youtubeId: 'qoY96aBZWw4', orientation: 'portrait' },
+].map((video, index) => ({
+  ...video,
+  group: 'Featured Videos',
+  position: index + 1,
+}));
+
+const UGC_VIDEOS = [
+  'x6EbirQJ-Gk',
+  'W7vklIsYfZg',
+  'dRVH5Se5ZM8',
+  'buj_li-fs8A',
+  'KQVVdQkv2Ro',
+  'pYVVZnxSyak',
+].map((youtubeId, index) => ({
+  id: `ugc-${String(index + 1).padStart(2, '0')}`,
+  youtubeId,
+  orientation: 'portrait',
+  group: 'UGC Shorts',
+  position: index + 1,
+}));
+
+const AI_VIDEOS = [
+  'mu4kLNHYLCU',
+  'Qq3_31R_Rk8',
+  'dKd03hVNp7E',
+  'oe_moDIXWsY',
+].map((youtubeId, index) => ({
+  id: `ai-${String(index + 1).padStart(2, '0')}`,
+  youtubeId,
+  orientation: 'portrait',
+  group: 'AI-Generated',
+  position: index + 1,
+}));
+
+const ALL_VIDEOS = [...MAIN_VIDEOS, ...UGC_VIDEOS, ...AI_VIDEOS];
 
 const META_ADS = Array.from({ length: 55 }, (_, index) => {
   const number = String(index + 1).padStart(2, '0');
@@ -87,23 +86,47 @@ const AMAZON_APLUS = Array.from({ length: 2 }, (_, index) => {
 const ALL_GRAPHICS = [...META_ADS, ...AMAZON_LISTING_IMAGES, ...AMAZON_APLUS];
 const GRAPHIC_CATEGORIES = ['All', 'Meta Ads', 'Amazon Listing Images'];
 
-function VideoTile({ video, onPlay }) {
+function youtubeThumbnail(youtubeId) {
+  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
+}
+
+function VideoTile({ video, onPlay, className = '' }) {
+  const isPortrait = video.orientation === 'portrait';
+
   return (
     <button
       type="button"
       onClick={() => onPlay(video)}
-      className={`group relative overflow-hidden bg-panel text-left w-full h-full min-h-[160px] ${video.span}`}
+      onContextMenu={(event) => event.preventDefault()}
+      className={`group relative block w-full overflow-hidden bg-panel ${
+        isPortrait ? 'aspect-[9/16]' : 'aspect-video'
+      } ${className}`}
+      aria-label={`Play ${video.group} video ${video.position}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 group-hover:opacity-80 transition-opacity" />
+      {/* YouTube thumbnail only; no YouTube title or outbound link is rendered. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={youtubeThumbnail(video.youtubeId)}
+        alt=""
+        loading="lazy"
+        draggable={false}
+        className="protected-media pointer-events-none absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+      />
+      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/25 transition-colors" />
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="w-12 h-12 rounded-full bg-paper/90 flex items-center justify-center text-ink text-lg group-hover:bg-accent group-hover:text-paper transition-colors">
+        <span className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-paper/95 shadow-xl flex items-center justify-center text-ink text-base sm:text-lg translate-x-[1px] group-hover:bg-accent group-hover:text-paper group-hover:scale-105 transition-all">
           ▶
         </span>
       </div>
-      <span className="absolute bottom-3 left-3 right-3 text-xs font-medium text-paper/90 line-clamp-2">
-        {video.title}
-      </span>
     </button>
+  );
+}
+
+function VideoSectionHeading({ children }) {
+  return (
+    <p className="font-hand text-accent text-lg sm:text-xl mb-3">
+      {children}
+    </p>
   );
 }
 
@@ -112,6 +135,7 @@ function MetaTile({ item, onOpen }) {
     <button
       type="button"
       onClick={() => onOpen(item)}
+      onContextMenu={(event) => event.preventDefault()}
       className="group relative block w-full mb-3 break-inside-avoid overflow-hidden bg-panel"
       aria-label={`View ${item.title}`}
     >
@@ -120,7 +144,8 @@ function MetaTile({ item, onOpen }) {
         src={item.src}
         alt={item.title}
         loading="lazy"
-        className="block w-full h-auto transition-transform duration-500 group-hover:scale-[1.015]"
+        draggable={false}
+        className="protected-media pointer-events-none block w-full h-auto transition-transform duration-500 group-hover:scale-[1.015]"
       />
       <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/55 border border-paper/15 text-paper/80 flex items-center justify-center opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
         ↗
@@ -134,6 +159,7 @@ function AmazonPreviewTile({ item, onOpen }) {
     <button
       type="button"
       onClick={() => onOpen(item)}
+      onContextMenu={(event) => event.preventDefault()}
       className="group relative block w-full overflow-hidden bg-panel"
       aria-label={`View ${item.title}`}
     >
@@ -143,7 +169,8 @@ function AmazonPreviewTile({ item, onOpen }) {
           src={item.src}
           alt={item.title}
           loading="lazy"
-          className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.015]"
+          draggable={false}
+          className="protected-media pointer-events-none w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.015]"
         />
       </div>
       <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/55 border border-paper/15 text-paper/80 flex items-center justify-center opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
@@ -168,7 +195,10 @@ function AmazonListingCarousel({ items, onOpen }) {
   }
 
   return (
-    <div className="relative w-full bg-panel overflow-hidden">
+    <div
+      className="relative w-full bg-panel overflow-hidden"
+      onContextMenu={(event) => event.preventDefault()}
+    >
       <button
         type="button"
         onClick={() => onOpen(item)}
@@ -180,7 +210,8 @@ function AmazonListingCarousel({ items, onOpen }) {
           src={item.src}
           alt={item.title}
           loading="lazy"
-          className="block w-full h-auto"
+          draggable={false}
+          className="protected-media pointer-events-none block w-full h-auto"
         />
         <span className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/55 border border-paper/15 text-paper/80 flex items-center justify-center opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
           ↗
@@ -251,6 +282,19 @@ export default function WorkGallery() {
     [activeGraphic, lightboxItems]
   );
 
+  const navigateVideo = useCallback(
+    (direction) => {
+      if (!activeVideo || ALL_VIDEOS.length < 2) return;
+      const currentIndex = ALL_VIDEOS.findIndex(
+        (video) => video.id === activeVideo.id
+      );
+      const nextIndex =
+        (currentIndex + direction + ALL_VIDEOS.length) % ALL_VIDEOS.length;
+      setActiveVideo(ALL_VIDEOS[nextIndex]);
+    },
+    [activeVideo]
+  );
+
   function changeGraphicCategory(category) {
     setGraphicCategory(category);
     setActiveGraphic(null);
@@ -287,10 +331,44 @@ export default function WorkGallery() {
       </div>
 
       {view === 'videos' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 auto-rows-[160px] gap-3 animate-fade-up">
-          {VIDEOS.map((video) => (
-            <VideoTile key={video.id} video={video} onPlay={setActiveVideo} />
-          ))}
+        <div className="animate-fade-up space-y-10">
+          <section aria-label="Featured videos">
+            <VideoSectionHeading>Featured videos</VideoSectionHeading>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+              {MAIN_VIDEOS.filter((video) => video.orientation === 'landscape').map(
+                (video) => (
+                  <VideoTile key={video.id} video={video} onPlay={setActiveVideo} />
+                )
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3">
+              {MAIN_VIDEOS.filter((video) => video.orientation === 'portrait').map(
+                (video) => (
+                  <VideoTile key={video.id} video={video} onPlay={setActiveVideo} />
+                )
+              )}
+            </div>
+          </section>
+
+          <section aria-label="UGC shorts">
+            <VideoSectionHeading>UGC shorts</VideoSectionHeading>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-3 gap-3">
+              {UGC_VIDEOS.map((video) => (
+                <VideoTile key={video.id} video={video} onPlay={setActiveVideo} />
+              ))}
+            </div>
+          </section>
+
+          <section aria-label="AI-generated video outputs">
+            <VideoSectionHeading>AI-generated outputs</VideoSectionHeading>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+              {AI_VIDEOS.map((video) => (
+                <VideoTile key={video.id} video={video} onPlay={setActiveVideo} />
+              ))}
+            </div>
+          </section>
         </div>
       ) : (
         <div className="animate-fade-up">
@@ -340,7 +418,12 @@ export default function WorkGallery() {
         </div>
       )}
 
-      <VideoLightbox video={activeVideo} onClose={() => setActiveVideo(null)} />
+      <VideoLightbox
+        video={activeVideo}
+        videos={ALL_VIDEOS}
+        onClose={() => setActiveVideo(null)}
+        onNavigate={navigateVideo}
+      />
       <GraphicLightbox
         item={activeGraphic}
         items={lightboxItems}

@@ -66,3 +66,11 @@ button:focus-visible {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Discourage casual saving/dragging of portfolio preview assets.
+   Web-delivered media can never be made impossible to capture. */
+.protected-media {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}

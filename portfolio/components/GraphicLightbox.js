@@ -30,6 +30,7 @@ export default function GraphicLightbox({ item, items, onClose, onNavigate }) {
     <div
       className="fixed inset-0 z-50 bg-black/95 flex flex-col"
       onClick={onClose}
+      onContextMenu={(event) => event.preventDefault()}
       role="dialog"
       aria-modal="true"
       aria-label={item.title}
@@ -57,6 +58,7 @@ export default function GraphicLightbox({ item, items, onClose, onNavigate }) {
       <div
         className="relative flex-1 min-h-0 overflow-y-auto px-4 sm:px-8 lg:px-14 py-6 sm:py-8"
         onClick={(event) => event.stopPropagation()}
+        onContextMenu={(event) => event.preventDefault()}
       >
         {hasMultiple && (
           <button
@@ -74,7 +76,8 @@ export default function GraphicLightbox({ item, items, onClose, onNavigate }) {
           <img
             src={item.src}
             alt={item.title}
-            className="block max-w-full sm:max-w-[88%] lg:max-w-[78%] h-auto shadow-2xl"
+            draggable={false}
+            className="protected-media pointer-events-none block max-w-full sm:max-w-[88%] lg:max-w-[78%] h-auto shadow-2xl"
           />
         </div>
 
