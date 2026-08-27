@@ -15,14 +15,14 @@ export default function ProfileSidebar() {
       </div>
 
       <a
-        href="/resume.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 bg-paper text-ink px-6 py-3 text-sm font-medium rounded-sm hover:bg-accent hover:text-paper transition-colors"
-      >
-        View my CV
-        <span aria-hidden="true">→</span>
-      </a>
+  href="/resume.pdf"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center gap-2 bg-paper text-ink px-6 py-3 text-sm font-medium rounded-sm hover:bg-accent hover:text-paper transition-colors"
+>
+  View my CV
+  <span aria-hidden="true">→</span>
+</a>
     </aside>
   );
 }
