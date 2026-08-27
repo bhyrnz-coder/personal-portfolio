@@ -2,8 +2,8 @@ import Image from 'next/image';
 
 export default function ProfileSidebar() {
   return (
-    <aside className="lg:sticky lg:top-0 lg:h-screen w-full lg:w-[380px] xl:w-[420px] shrink-0 flex flex-col items-center justify-center px-6 py-10 lg:py-6 gap-6">
-      <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[340px] xl:max-w-[380px]">
+    <aside className="lg:sticky lg:top-0 lg:h-screen w-full lg:w-[460px] xl:w-[520px] 2xl:w-[580px] shrink-0 flex flex-col items-center lg:items-start justify-start px-6 lg:pl-10 lg:pr-4 pt-10 lg:pt-16 gap-6">
+      <div className="relative w-full max-w-[380px] sm:max-w-[420px] lg:max-w-[400px] xl:max-w-[460px] 2xl:max-w-[500px]">
         <Image
           src="/profile-card.png"
           alt="Renz Anthony Buhay — Video Editor / Graphic Designer. Working online since the pandemic, over 5 years now, in graphics, video editing, and AI-assisted workflows. Skills: Photoshop, Illustrator, After Effects, Premiere Pro, CapCut."
@@ -14,7 +14,7 @@ export default function ProfileSidebar() {
         />
       </div>
 
-      <a
+      
         href="/resume.pdf"
         target="_blank"
         rel="noopener noreferrer"
